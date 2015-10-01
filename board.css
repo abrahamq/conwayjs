@@ -1,0 +1,41 @@
+#conwayTitle {
+	text-align: center; 
+}
+
+.buttonContainer{ /*I hate css*/
+	text-align: center; 
+	margin:  auto;
+}
+
+.button {
+}
+
+#gridContainer {
+	width: 100%;
+	background: white;
+}
+
+#grid{
+	margin: auto; 
+}
+
+tr {
+	background: white;
+}
+
+
+td { 
+    width: 10px;
+    height: 10px;
+    margin: 0px;
+    outline: 1px solid;
+    float: left; 
+    background: #FFFFFF;
+}
+
+.cellAlive {
+	background: black; 
+}
+.cellDead {
+	background: white;
+}

@@ -1,3 +1,5 @@
+//can update board
+//can update neighbors? 
 var Board = function(width, length){
   'use strict'; 
   var that = Object.create(Board.prototype); 
@@ -29,6 +31,7 @@ var Board = function(width, length){
         }
       }
     }
+    that.print(); 
   }; 
 
   that.print = function(){
@@ -41,7 +44,6 @@ var Board = function(width, length){
           row = row+'0'; 
         }
       }
-      console.log(row); 
     }
   };
 
@@ -56,6 +58,7 @@ var Board = function(width, length){
       var downRight = [x+1, y-1]; 
       var right = [x+1, y]; 
       var left = [x-1, y]; 
+      //TODO: refactor into nested forEach; 
       if (insideGrid(upLeft[0], upLeft[1]) && that.grid[upLeft[0]][upLeft[1]].isAlive()){
         result += 1; 
       }
@@ -68,19 +71,15 @@ var Board = function(width, length){
       if (insideGrid(downLeft[0], downLeft[1]) && that.grid[downLeft[0]][downLeft[1]].isAlive()){
         result += 1; 
       }
-
       if (insideGrid(down[0], down[1]) && that.grid[down[0]][down[1]].isAlive()){
         result += 1; 
       }
-
       if (insideGrid(downRight[0], downRight[1]) && that.grid[downRight[0]][downRight[1]].isAlive()){
         result += 1; 
       }
-
       if (insideGrid(right[0], right[1]) && that.grid[right[0]][right[1]].isAlive()){
         result += 1; 
       }
-
       if (insideGrid(left[0], left[1]) && that.grid[left[0]][left[1]].isAlive()){
         result += 1; 
       }
@@ -98,6 +97,14 @@ var Board = function(width, length){
     }
   }; 
 
+  that.toggleCell = function(x, y){
+    if(that.isAlive(x, y)){
+      that.grid[x][y].kill(); 
+    } else {
+      that.grid[x][y].revive(); 
+    }
+  }; 
+
 
   var Cell = function(x, y){
     var that = Object.create(Cell.prototype); 
@@ -107,6 +114,7 @@ var Board = function(width, length){
     that.y = y; 
 
     var neighbors = 0; 
+    var listeners = []; //array of functions to call when state changes 
 
     that.isAlive = function(){
       return isAlive; 
@@ -114,10 +122,16 @@ var Board = function(width, length){
 
     that.kill = function(){
       isAlive = false;
+      listeners.forEach( function(e){
+        e(isAlive); 
+      }); 
     };
 
     that.revive = function(){
       isAlive = true; 
+      listeners.forEach( function(e){
+        e(isAlive); 
+      }); 
     };
 
     that.setNumNeighbors = function(num){
@@ -127,6 +141,10 @@ var Board = function(width, length){
     that.getNumNeighbors = function(){
       return neighbors;
     };
+
+    that.addListener = function(fn){
+      listeners.push(fn); 
+    }; 
 
 
     return Object.freeze(that); 
@@ -142,24 +160,16 @@ var Board = function(width, length){
     }
   }; 
 
+  that.addListener = function( x, y, fn){ //registers function fn to listen to state changes on (x, y) coordinate
+    that.grid[x][y].addListener(fn); 
+  }; 
+
+  that.isAlive = function(x, y){
+    return that.grid[x][y].isAlive(); 
+  }; 
+
+
   initialize(); 
   return Object.freeze(that); 
 }; 
-
-
-//console.log(Board(2,2)); 
-//console.log((Board(4,4).grid)); 
-
-board = Board(5,5); 
-board.setAlive(1,1); 
-board.setAlive(1,2); 
-board.setAlive(1,3); 
-board.print();
-board.update();
-window.setTimeout(board.print(), 1000); 
-window.setTimeout(board.update(), 1000); 
-window.setTimeout(board.print(), 1000); 
-window.setTimeout(board.update(), 1000); 
-window.setTimeout(board.print(), 1000); 
-window.setTimeout(board.update(), 1000); 
 
