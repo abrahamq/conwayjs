@@ -1,5 +1,5 @@
 //can update board
-//can update neighbors? 
+//can update neighbors
 var Board = function(width, length){
   'use strict'; 
   var that = Object.create(Board.prototype); 
@@ -88,7 +88,7 @@ var Board = function(width, length){
   }; 
 
   var insideGrid = function(x, y){
-    return x< width && y < width && x >= 0 && y >= 0 ; 
+    return x< width && y < length && x >= 0 && y >= 0 ; 
   }; 
 
   that.setAlive = function(x, y){
