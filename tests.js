@@ -14,47 +14,79 @@
 //simple oscilator over 3 updates. 
 
 
+QUnit.test( 'one cell dies by itself ', function(assert){
+  board = boardController(1,1); 
+  board.toggleCell(0,0); 
+
+  board.update(); 
+
+  assert.ok(board.isAlive(0,0) === false, 'should not be alive'); 
+}); 
+
+
+QUnit.test( 'dead cell with 2 neighbors stays alive', function( assert ) {
+  board = boardController(5, 5); 
+
+  board.toggleCell(0,0); 
+  board.toggleCell(1,0); 
+  board.toggleCell(0,1); 
+
+  board.update(); 
+  assert.ok(board.isAlive(0,1) === true, 'should stay alive'); 
+}); 
+
+QUnit.test( 'dead cell with 3 neighbors becomes alive after update', function( assert ) {
+  board = boardController(5, 5); 
+
+  board.toggleCell(0,0); 
+  board.toggleCell(1,0); 
+  board.toggleCell(0,1); 
+
+  assert.ok(board.isAlive(1,1) === false, 'should not be alive before update'); 
+  board.update(); 
+  assert.ok(board.isAlive(1,1) === true, 'dead cell with 3 live neighbors becomes alive'); 
+}); 
+
 QUnit.test( 'simple oscillator', function( assert ) {
-  board = Board(5, 5); 
-  board = Board(5,5);
-  board.setAlive(1,1);
-  board.setAlive(1,2);
-  board.setAlive(1,3);
+  board = boardController(5, 5); 
+  board.toggleCell(1,3);
+  board.toggleCell(2,3);
+  board.toggleCell(3,3);
 
-  board.addListener( 1, 2, function(isAlive){
-    assert.ok(  isAlive === true  , '(1,2) should always be alive' );
-  });  //(1, 2) should always be alive 
-
-  var counter = 0; 
-  board.addListener( 1, 1, function(isAlive){
-    (function(){
-      counter++; 
-    })(); 
-    if (counter%2 !== 0){ //odd, we should be dead 
-      assert.ok(  isAlive === false  ,
-                'should be dead on odd number: counter: ' + counter.toString() );
-    }else{
-      assert.ok(  isAlive === true  , 
-                'should be alive on even number: counter: ' + counter.toString());
-    }
-  }); 
-
-  var counter13 = 0; 
-  board.addListener( 1, 3, function(isAlive){
-    (function(){
-      counter13++; 
-    })(); 
-    if (counter13%2 !== 0){ //odd, we should be dead 
-      assert.ok(  isAlive === false  , 
-                'should be dead on odd number: counter: ' + counter13.toString() );
-    }else{
-      assert.ok(  isAlive === true  , 
-                'should be alive on even number: counter: ' + counter13.toString());
-    }
-  }); 
 
   board.update();
+  assert.ok(board.isAlive(1,3) === false, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(3,3) === false, ''); 
+
+  assert.ok(board.isAlive(2,2) === true, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(2,4) === true, ''); 
+
+  board.update(); 
+  assert.ok(board.isAlive(1,3) === true, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(3,3) === true, ''); 
+
+  assert.ok(board.isAlive(2,2) === false, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(2,4) === false, ''); 
+
   board.update();
-  board.update();
-  board.update();
+  assert.ok(board.isAlive(1,3) === false, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(3,3) === false, ''); 
+
+  assert.ok(board.isAlive(2,2) === true, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(2,4) === true, ''); 
+
+  board.update(); 
+  assert.ok(board.isAlive(1,3) === true, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(3,3) === true, ''); 
+
+  assert.ok(board.isAlive(2,2) === false, ''); 
+  assert.ok(board.isAlive(2,3) === true, 'should always be alive'); 
+  assert.ok(board.isAlive(2,4) === false, ''); 
 });
