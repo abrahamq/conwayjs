@@ -69,6 +69,9 @@ $(document).ready(function(){
 
   //register listeners for the buttons 
   var $play = $('#playButton').click( function(){
+    if (pause === false){
+      return;  //don't do anything if already playing
+    }
     pause = false; 
     render(); 
   });
